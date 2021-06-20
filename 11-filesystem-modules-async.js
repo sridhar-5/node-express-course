@@ -24,11 +24,13 @@ readFile("./content/second.txt", "utf8", (error, result) => {
           console.log(error);
           return;
         }
-        console.log(result);
+        console.log("done writing");
       }
     );
   });
 });
+
+console.log("execution of this file finish");
 
 //the main reason on why we use async functions here is that
 // only after the read from both the files we can write the content
