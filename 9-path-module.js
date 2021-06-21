@@ -23,3 +23,5 @@ console.log(baseName);
 const absolutePath = path.resolve(__dirname, "content", "text.txt");
 
 console.log(absolute);
+
+//hello world
