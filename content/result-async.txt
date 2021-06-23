@@ -1,2 +1,0 @@
-Here is the result: hello this is my second file
-, text txt
