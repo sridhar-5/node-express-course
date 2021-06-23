@@ -1,23 +1,39 @@
-//including the express module here
-
 const express = require("express");
-
-//this line of code here creates a server instance
+const { products } = require("./data");
 const app = express();
 
-// now there are quite some methods we can make use of
-// from this object
+app.get("/", (request, response) => {
+  response.json(products);
+});
 
-// app.get
-// app.post
-// app.put
-// app.delete
-//app.all
-//app.listen
+app.get("/api/products", (request, response) => {
+  const newProducts = products.map((product) => {
+    const { id, name, image } = product;
+    return { id, name, image };
+  });
+  response.json(newProducts);
+});
 
-//get request to access the home page first
-app.get("/", () => {});
+// app.get("/api/products/1", (req, res) => {
+//   const singleProduct = products.find((product) => product.id === 1);
+//   res.json(singleProduct);
+// });
+//this is a bit harsh and involves a bit of hard coding so
+//we have something called request params
+
+app.get("/api/products/:productID", (req, res) => {
+  const { productID } = req.params;
+
+  const singleProduct = products.find(
+    (product) => product.id === Number(productID)
+  );
+  //this is the case when the porduct id is not existing in the api
+  if (!singleProduct) {
+    return res.status(404).send("Product does not exist");
+  }
+  res.json(singleProduct);
+});
 
 app.listen(5000, () => {
-  console.log("server listening on 5000");
+  console.log("Listening to port 5000");
 });
