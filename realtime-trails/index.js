@@ -73,6 +73,7 @@ app.put("/api/courses/:id", (request, response) => {
   var course = courses.find((c) => c.id === parseInt(request.params.id));
   if (!course) {
     rsponse.status(404).send("course with this id is not available");
+    return;
   }
 
   const schema = Joi.object({
@@ -88,6 +89,22 @@ app.put("/api/courses/:id", (request, response) => {
   }
   //if everything above is valid then now update course here
   course.name = request.body.name;
+  console.log(courses);
+  response.send(course);
+});
+
+app.delete("/api/courses/:id", (request, response) => {
+  var course = courses.find((c) => c.id === parseInt(request.params.id));
+
+  if (!course) {
+    response.status(404).send("course with this id is not available");
+    return;
+  }
+
+  //validation logic not implemented because thys is a delete request
+  //deletion using the splice method
+  var index = courses.indexOf(course);
+  courses.splice(index, 1);
   console.log(courses);
   response.send(course);
 });
