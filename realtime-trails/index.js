@@ -35,13 +35,17 @@ app.post("/api/courses", (request, response) => {
 
   //replacing the above validation logic with joi
   //joi needs a schema to validate
-  const schema = {
+  const schema = Joi.object({
     name: Joi.string().min(3).required(),
-  };
+  });
 
-  const result = Joi.validate(request.body, schema);
+  const result = schema.validate(request.body);
+
   console.log(result);
-
+  if (result.error) {
+    response.status(400).send(result.error.details[0].message);
+    return;
+  }
   const course = {
     id: courses.length + 1,
     name: request.body.name,
@@ -62,4 +66,28 @@ const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
   console.log(`Listening on ${port}`);
+});
+
+app.put("/api/courses/:id", (request, response) => {
+  //look up the course
+  var course = courses.find((c) => c.id === parseInt(request.params.id));
+  if (!course) {
+    rsponse.status(404).send("course with this id is not available");
+  }
+
+  const schema = Joi.object({
+    name: Joi.string().min(3).required(),
+  });
+
+  const result = schema.validate(request.body);
+  console.log(result);
+
+  if (result.error) {
+    response.status(400).send("course name not proper ");
+    return;
+  }
+  //if everything above is valid then now update course here
+  course.name = request.body.name;
+  console.log(courses);
+  response.send(course);
 });
