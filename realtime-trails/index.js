@@ -33,7 +33,15 @@ app.post("/api/courses", (request, response) => {
   //   return;
   // }
 
-  //replaceing the above validation logic with joi
+  //replacing the above validation logic with joi
+  //joi needs a schema to validate
+  const schema = {
+    name: Joi.string().min(3).required(),
+  };
+
+  const result = Joi.validate(request.body, schema);
+  console.log(result);
+
   const course = {
     id: courses.length + 1,
     name: request.body.name,
