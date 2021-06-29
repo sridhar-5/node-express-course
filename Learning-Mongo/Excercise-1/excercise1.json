@@ -1,0 +1,62 @@
+[
+    {
+        "_id" : "5a68fdc3615eda645bc6bdec",
+        "tags":["express","backend"],
+        "date":"2018-01-24T21:42:59.605Z",
+        "name": "ASP.NET MVC Course",
+        "author": "Mosh",
+        "isPublished":true,
+        "price":15,
+        "__v":0
+    },
+    {
+        "_id" : "5a68fdd7bee8ea64649c2777",
+        "tags":["node","backend"],
+        "date":"2018-01-24T21:43:21.589Z",
+        "name": "Nextjs Course",
+        "author": "Sridhar",
+        "isPublished":false,
+        "price":19,
+        "__v":0
+    },
+    {
+        "_id" : "5a68fde3f09ad7646mdec17e",
+        "tags":["aspnet","backend"],
+        "date":"2018-01-24T21:44:22.575Z",
+        "name": "Asp.net Course",
+        "author": "Ashish",
+        "isPublished":true,
+        "price":63,
+        "__v":0
+    },
+    {
+        "_id" : "5a68fe2142ae6a6482c4c9cb",
+        "tags":["react","frontend"],
+        "date":"2018-01-24T21:45:01.568Z",
+        "name": "React Course",
+        "author": "Sridhar",
+        "isPublished":true,
+        "price":8,
+        "__v":0
+    },
+    {
+        "_id" : "5a68ff090c553064a218a547",
+        "tags":["node","backend"],
+        "date":"2018-01-24T21:45:59.561Z",
+        "name": "Node mongo Course",
+        "author": "Mosh",
+        "isPublished":false,
+        "price":21,
+        "__v":0
+    },
+    {
+        "_id" : "5a6900fff467be65019a9001",
+        "tags":["node","backend"],
+        "date":"2018-01-24T21:46:25.551Z",
+        "name": "Nodejs Course",
+        "author": "Sridhar",
+        "isPublished":false,
+        "price":25,
+        "__v":0
+    }
+]
