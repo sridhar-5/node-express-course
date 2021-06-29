@@ -38,15 +38,48 @@ const ExerciseSchema = new mongoose.Schema({
 
 const Exercise = mongoose.model("Course", ExerciseSchema);
 
-async function queryExercise() {
+//Exercise -1
+//getting all the published backend courses and sorting them by name and dsiplaying the name and their authors
+// async function queryExercise() {
+//   const queryResult = await Exercise.find({
+//     isPublished: true,
+//     tags: "backend",
+//   })
+//     .sort({ name: 1 })
+//     .select({ name: 1, author: 1 });
+
+//   console.log(queryResult);
+// }
+
+// queryExercise();
+
+//Exercise-2
+
+//gwtting all the published front end and backend coursesand sort them in descendin order according to the price
+//and selecting only name and the author and siaplying them
+
+// const Exercise2 = async () => {
+//   const queryResult = await Exercise.find({
+//     isPublished: true,
+//     tags: { $in: ["frontend", "backend"] },
+//   })
+//     .sort({ price: -1 })
+//     .select({ name: 1, author: 1 });
+
+//   console.log(queryResult);
+// };
+
+// Exercise2();
+
+//Exercise -3
+
+//getting all the published courses that are more than 15 dollars or have the word'by' in rheir title
+
+const Exercise3 = async () => {
   const queryResult = await Exercise.find({
     isPublished: true,
-    tags: "backend",
-  })
-    .sort({ name: 1 })
-    .select({ name: 1, author: 1 });
-
+  }).or([{ price: { $gte: 15 } }, { name: /.*by.*/i }]);
   console.log(queryResult);
-}
+};
 
-queryExercise();
+Exercise3();
