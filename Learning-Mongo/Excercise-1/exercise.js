@@ -26,6 +26,7 @@ connectionStatus.catch((error) => {
 
 //creating a schema
 const ExerciseSchema = new mongoose.Schema({
+  _id: String,
   name: String,
   tags: [String],
   date: { type: Date },
@@ -75,11 +76,35 @@ const Exercise = mongoose.model("Course", ExerciseSchema);
 
 //getting all the published courses that are more than 15 dollars or have the word'by' in rheir title
 
-const Exercise3 = async () => {
-  const queryResult = await Exercise.find({
-    isPublished: true,
-  }).or([{ price: { $gte: 15 } }, { name: /.*by.*/i }]);
-  console.log(queryResult);
-};
+// const Exercise3 = async () => {
+//   const queryResult = await Exercise.find({
+//     isPublished: true,
+//   }).or([{ price: { $gte: 15 } }, { name: /.*by.*/i }]);
+//   console.log(queryResult);
+// };
 
-Exercise3();
+//updating a database
+// two approaches
+
+// 1 : Query first
+// findbyID()
+// modify the properties
+// save
+
+async function UpdateDatabase(id) {
+  const exer = await Exercise.findById(id);
+  console.log(exer);
+  //if the course is not exisitng then return
+  if (!exer) {
+    console.log("quitting....");
+    return;
+  }
+  exer.set({
+    name: "Imaginary",
+    author: "Me",
+  });
+  const wait = await exer.save();
+  console.log(wait);
+}
+
+UpdateDatabase("5a68fdc3615eda645bc6bdec");

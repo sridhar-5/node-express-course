@@ -1,28 +1,36 @@
 const Express = require("express");
-
+const mongoose = require("mongoose");
 const router = Express.Router();
+const Joi = require("joi");
 
-const albums = [
-  { id: 1, Albumname: "purpose", writer: "justin bieber" },
-  { id: 2, Albumname: "changes", writer: "justin bieber" },
-  { id: 3, Albumname: "revival", writer: "selena gomez" },
-  { id: 4, Albumname: "rare", writer: "selena gomez" },
-  { id: 5, Albumname: "fearless", writer: "taylor swift" },
-  { id: 6, Albumname: "desire", writer: "ariana grande" },
-  { id: 7, Albumname: "crown", writer: "nick jonas" },
-  { id: 8, Albumname: "baby", writer: "ludacris" },
-  { id: 9, Albumname: "city life", writer: "beyonce" },
-  { id: 10, Albumname: "care about us", writer: "micheal jackson" },
-];
+//defining a schema for the albums db
 
-router.get("/", (request, response) => {
+const albumSchema = new mongoose.Schema({
+  Albumname: {
+    type: String,
+    required: true,
+    minlength: 1,
+    maxlength: 100,
+  },
+  writer: {
+    type: String,
+    //if the album is out then write must exist
+    required: true,
+  },
+});
+
+//creating the model
+const Album = mongoose.model("album", albumSchema);
+
+router.get("/", async (request, response) => {
+  const albums = await Album.find();
   response.send(albums);
 });
 
 //get a specific album by id number
-router.get("/:AlbumId", (request, response) => {
+router.get("/:AlbumId", async (request, response) => {
   const paramId = request.params.AlbumId;
-  const album = albums.find((item) => item.id === parseInt(paramId));
+  const album = await Album.findById(paramId);
   if (!album) {
     response
       .status(404)
@@ -36,7 +44,7 @@ router.get("/:AlbumId", (request, response) => {
 });
 
 //accept data through a post request : user can add a new album to the albums
-router.post("/", (request, response) => {
+router.post("/", async (request, response) => {
   //validate what user is trying to do first using joi
 
   const schema = Joi.object({
@@ -52,30 +60,20 @@ router.post("/", (request, response) => {
     return;
   }
   //creating an new object for the new album that is to be inserted
-  const album = {
-    id: albums.length + 1,
+  const album = new Album({
     Albumname: request.body.Albumname,
     writer: request.body.writer,
-  };
-  //pushing this instance into the albums array
-  albums.push(album);
-  //for testing
-  console.log(albums);
-  response.send(album);
+  });
+
+  const savingalbum = await album.save();
+
+  console.log(savingalbum);
+  response.send(savingalbum);
 });
 
 //put request
 
-router.put("/:AlbumId", (request, response) => {
-  const album = albums.find(
-    (item) => item.id === parseInt(request.params.AlbumId)
-  );
-  if (!album) {
-    response
-      .status(404)
-      .send(`<h1 style="text-align:center;">Album not found</h1>`);
-    return;
-  }
+router.put("/:AlbumId", async (request, response) => {
   //validation should be done while updating as well
   const schema = Joi.object({
     Albumname: Joi.string().min(5).required(),
@@ -89,19 +87,29 @@ router.put("/:AlbumId", (request, response) => {
     response.status(400).send(error.details[0].message);
     return;
   }
-  //updating if no errors occured
-  album.Albumname = request.body.Albumname;
-  album.writer = request.body.writer;
+
+  const album = await Album.findByIdAndUpdate(request.params.AlbumId, {
+    $set: {
+      Albumname: request.body.Albumname,
+      writer: request.body.writer,
+    },
+  });
+
+  if (!album) {
+    response
+      .status(404)
+      .send(`<h1 style="text-align:center;">Album not found</h1>`);
+    return;
+  }
+
   //console for testing
-  console.log(albums);
+  console.log(album);
   response.send(album);
 });
 
 //delete request
-router.delete("/:AlbumId", (request, response) => {
-  const album = albums.find(
-    (item) => item.id === parseInt(request.params.AlbumId)
-  );
+router.delete("/:AlbumId", async (request, response) => {
+  const album = await Album.findByIdAndRemove(request.params.id);
   if (!album) {
     response
       .status(404)
@@ -109,10 +117,7 @@ router.delete("/:AlbumId", (request, response) => {
         `<h1 style="text-align:center;">OOPS!! Album you are searching for is not found</h1>`
       );
   }
-  const index = albums.indexOf(album);
-  //splicing the albums
-  albums.splice(index, 1);
-  //for testing
+
   console.log(albums);
   response.send(album);
 });

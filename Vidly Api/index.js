@@ -1,5 +1,8 @@
 //class
 const Express = require("express");
+
+//addign persistence
+const mongoose = require("mongoose");
 //creating the instance of express
 const app = Express();
 
@@ -7,6 +10,7 @@ const app = Express();
 const Joi = require("joi");
 const albums = require("./routes/albums");
 const homepage = require("./routes/homepage");
+const customers = require("./routes/customer");
 const logger = require("./logger");
 const auth = require("./Auth");
 
@@ -15,6 +19,7 @@ app.use(logger);
 app.use(auth);
 app.use("/api/albums", albums);
 app.use("/", homepage);
+app.use("/api/customers", customers);
 //vidly data
 
 app.set("view engine", "pug");
@@ -37,6 +42,21 @@ app.set("views", "./views");
 //middle ware functions are always called in sequence
 
 //now home page
+
+//establishing connection to data base
+const connection = mongoose.connect("mongodb://localhost:27017/vidly", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: true,
+});
+
+//handling the connection
+connection.then(() => {
+  console.log("conenction established..");
+});
+connection.catch((error) => {
+  console.log("conection rejected...", error.message);
+});
 
 //listening on port 5000
 const port = process.env.PORT || 5000;

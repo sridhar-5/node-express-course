@@ -104,5 +104,3 @@ async function getCourse() {
     .select({ name: 1, author: 1 });
   console.log(courses);
 }
-
-getCourse();
