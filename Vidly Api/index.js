@@ -13,6 +13,7 @@ const homepage = require("./routes/homepage");
 const customers = require("./routes/customer");
 const logger = require("./logger");
 const auth = require("./Auth");
+const Users = require("./routes/RegisterUser");
 
 app.use(Express.json());
 app.use(logger);
@@ -20,6 +21,7 @@ app.use(auth);
 app.use("/api/albums", albums);
 app.use("/", homepage);
 app.use("/api/customers", customers);
+app.use("/api/users", Users);
 //vidly data
 
 app.set("view engine", "pug");
