@@ -1,11 +1,12 @@
 const Express = require("express");
 const mongoose = require("mongoose");
+const _ = require("lodash");
+const bcrypt = require("bcrypt");
 const router = Express.Router();
 const Joi = require("joi");
 const { User } = require("../models/UserModel");
 
 router.post("/", async (request, response) => {
-  console.log(User);
   const joischema = Joi.object({
     name: Joi.string().min(5).max(50).required(),
     email: Joi.string().min(6).max(100),
@@ -13,22 +14,37 @@ router.post("/", async (request, response) => {
   });
 
   const { error } = joischema.validate(request.body);
-  if (error)
-    return response
-      .status(400)
-      .send(`<h1 style="text-align: center">This is a bad request.</h1>`);
-
+  if (error) return response.status(400).send(error.details[0].message);
   var user = await User.findOne({ email: request.body.email });
   if (user)
     return response.status(400).send(`User Already Exist. Please try to login`);
+
   user = new User({
     name: request.body.name,
     email: request.body.email,
     password: request.body.password,
   });
+  //storing the password as a normal text in the database is funny and not safe
+  //conecpt behind this kind of salted hashing is if you simpley hash and store your password in the database
+  // ex 1234 => abcd here assume 1234 has abcd as its hash so hackers can compile some popular hashes and compare and get to know
+  // that abcd is 1234 so the idea of this salt is like we add the salt before ot after the string so that it is different every time
+  // depends on the salt we use.
 
-  const saving_the_user = await user.save();
-  response.send(user);
+  //gensalt returns a promise and the parameter is the no of rounds we are salting
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(user.password, salt);
+  user.password = hashedPassword;
+  await user.save();
+
+  //here we are sending the user all the information including the password which is unecessary
+  //one way of doing this is
+  // response.send({
+  //   user.name,
+  //   user.email
+  // })
+  //this is not an efficient way of soing this instead we can use the lodash module
+  response.send(_.pick(user, ["name", "email"]));
+  // response.send(user);
 });
 
 module.exports = router;

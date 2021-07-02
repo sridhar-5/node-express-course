@@ -1,10 +1,18 @@
 //class
 const Express = require("express");
+//importing jsonwebtoken library
 
+const jwt = require("jsonwebtoken");
 //addign persistence
 const mongoose = require("mongoose");
+const config = require("config");
 //creating the instance of express
 const app = Express();
+
+if (!config.get("jwtPrivateKey")) {
+  console.error("Fatal error: private key not found");
+  process.exit(1);
+}
 
 //joi class
 const Joi = require("joi");
@@ -14,6 +22,7 @@ const customers = require("./routes/customer");
 const logger = require("./logger");
 const auth = require("./Auth");
 const Users = require("./routes/RegisterUser");
+const loginAuth = require("./routes/Auth");
 
 app.use(Express.json());
 app.use(logger);
@@ -22,6 +31,7 @@ app.use("/api/albums", albums);
 app.use("/", homepage);
 app.use("/api/customers", customers);
 app.use("/api/users", Users);
+app.use("/api/login", loginAuth);
 //vidly data
 
 app.set("view engine", "pug");
