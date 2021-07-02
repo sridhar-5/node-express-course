@@ -19,14 +19,10 @@ const Joi = require("joi");
 const albums = require("./routes/albums");
 const homepage = require("./routes/homepage");
 const customers = require("./routes/customer");
-const logger = require("./logger");
-const auth = require("./Auth");
 const Users = require("./routes/RegisterUser");
 const loginAuth = require("./routes/Auth");
 
 app.use(Express.json());
-app.use(logger);
-app.use(auth);
 app.use("/api/albums", albums);
 app.use("/", homepage);
 app.use("/api/customers", customers);

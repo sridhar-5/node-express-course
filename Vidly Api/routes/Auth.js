@@ -25,7 +25,7 @@ router.post("/", async (request, response) => {
   if (!passwordValidate)
     return response.status(400).send("Invalid username or password");
 
-  var token = jwt.sign({ _id: user._id }, config.get("jwtPrivateKey"));
+  const token = user.generateAuthToken();
   response.send(token);
 });
 

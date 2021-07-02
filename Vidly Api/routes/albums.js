@@ -2,6 +2,7 @@ const Express = require("express");
 const mongoose = require("mongoose");
 const router = Express.Router();
 const Joi = require("joi");
+const AuthUser = require("../middleware/Authunticate");
 
 //defining a schema for the albums db
 
@@ -44,7 +45,7 @@ router.get("/:AlbumId", async (request, response) => {
 });
 
 //accept data through a post request : user can add a new album to the albums
-router.post("/", async (request, response) => {
+router.post("/", AuthUser, async (request, response) => {
   //validate what user is trying to do first using joi
 
   const schema = Joi.object({
