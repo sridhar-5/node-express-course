@@ -5,6 +5,8 @@ const bcrypt = require("bcrypt");
 const router = Express.Router();
 const Joi = require("joi");
 const { User } = require("../models/UserModel");
+const jwt = require("jsonwebtoken");
+const config = require("config");
 
 router.post("/", async (request, response) => {
   const joischema = Joi.object({
@@ -43,7 +45,11 @@ router.post("/", async (request, response) => {
   //   user.email
   // })
   //this is not an efficient way of soing this instead we can use the lodash module
-  response.send(_.pick(user, ["name", "email"]));
+
+  //in this application we assume taht if the user is registered then there is no need of login
+  //so we generate jwt token here
+  const token = jwt.sign({ _id: user._id }, config.get("jwtPrivateKey"));
+  response.header("x-auth-token", token).send(_.pick(user, ["name", "email"]));
   // response.send(user);
 });
 
